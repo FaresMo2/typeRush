@@ -40,6 +40,7 @@ function StartGame() {
   const [textArea, setTextArea] = useState("");
   const sentencesTest = useSelector((state) => state.game.sentences);
   console.log(sentencesTest);
+  console.log(sentencesTest[0]);
 
   const [searchParams] = useSearchParams();
   const filterValue = searchParams.get("level") || "easy";
