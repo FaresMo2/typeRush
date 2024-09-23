@@ -68,7 +68,7 @@ function StartGame() {
         <TypeArea
           value={textArea}
           onChange={(e) => setTextArea(e.target.value)}
-          placeholder={test}
+          placeholder={randomTest}
           disabled={textArea === test}
         />
       </div>
