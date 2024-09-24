@@ -1,8 +1,7 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { level } from "../features/startGame/gameSlice";
+import { selectLevel, start } from "../features/startGame/gameSlice";
 import Heading from "../components/Heading";
 
 const StyledSelectLevel = styled.form`
@@ -14,7 +13,7 @@ const StyledSelectLevel = styled.form`
   display: flex;
   flex-direction: column;
   gap: 50px;
-  margin-top: 220px;
+  margin-top: 190px;
 `;
 
 const Select = styled.select`
@@ -29,6 +28,7 @@ const Select = styled.select`
   font-size: 16px;
   outline: none;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 120px;
 
   &:hover,
   &:focus {
@@ -40,8 +40,8 @@ const Select = styled.select`
 
 const Button = styled.button`
   margin-inline: auto;
-  width: 150px;
-  padding: 15px 30px;
+  width: 180px;
+  padding: 12px 30px;
   border-radius: 17px;
   cursor: pointer;
   color: white;
@@ -51,6 +51,7 @@ const Button = styled.button`
   outline: none;
   font-weight: bold;
   transition: all 0.3s;
+  font-size: 20px;
 
   &:hover {
     background-color: gray;
@@ -62,17 +63,22 @@ const Name = styled.span`
 `;
 
 function SelectLevel() {
-  const [select, setSelect] = useState("");
+  const levelSelected = useSelector((state) => state.game.level);
+  const time = useSelector((state) => state.game.secondRemaining);
+  const status = useSelector((state) => state.game.status);
   const name = useSelector((state) => state.user.name);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (!select) return;
-    dispatch(level(select));
+    if (!levelSelected) return;
+    dispatch(start());
     navigate("/game");
   }
+
+  console.log("level status " + status);
+  console.log("game time " + time);
 
   return (
     <StyledSelectLevel onSubmit={handleSubmit}>
@@ -80,14 +86,18 @@ function SelectLevel() {
         Hello <Name>{name}</Name>, Please select level !
       </Heading>
 
-      <Select value={select} onChange={(e) => setSelect(e.target.value)}>
+      <Select
+        className="slide-top"
+        value={levelSelected}
+        onChange={(e) => dispatch(selectLevel(e.target.value))}
+      >
         <option value="">Select Level....</option>
         <option value="easy">Easy</option>
         <option value="medium">Medium</option>
         <option value="hard">Hard</option>
       </Select>
 
-      {select && <Button>Start Game</Button>}
+      {levelSelected && <Button>Start Game</Button>}
     </StyledSelectLevel>
   );
 }

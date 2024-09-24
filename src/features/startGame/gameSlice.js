@@ -57,23 +57,45 @@ const gameinitialState = {
       level: "hard",
     },
   ],
+  status: "ready",
   level: "",
   highScore: 0,
-  secondRemaining: null,
+  secondRemaining: 20,
 };
 
 export default function gameReducer(state = gameinitialState, action) {
   switch (action.type) {
-    case "game/sentences":
-      return {
-        ...state,
-        sentences: action.payload,
-      };
-
-    case "game/level":
+    case "game/selectlevel":
       return {
         ...state,
         level: action.payload,
+      };
+
+    case "game/start":
+      return {
+        ...state,
+        status: "active",
+        secondRemaining: 20,
+      };
+
+    case "game/finish":
+      return {
+        ...state,
+        status: "finished",
+      };
+
+    case "restart":
+      return {
+        ...state,
+        status: "ready",
+        secondRemaining: 20,
+      };
+
+    case "tick":
+      return {
+        ...state,
+        secondRemaining: state.secondRemaining - 1,
+        status: state.secondRemaining === 0 ? "finished" : state.status,
       };
 
     default:
@@ -81,10 +103,18 @@ export default function gameReducer(state = gameinitialState, action) {
   }
 }
 
-export function sentences(sentences) {
-  return { type: "game/sentences", payload: sentences };
+export function selectLevel(level) {
+  return { type: "game/selectlevel", payload: level };
 }
 
-export function level(level) {
-  return { type: "game/level", payload: level };
+export function start() {
+  return { type: "game/start" };
+}
+
+export function finish() {
+  return { type: "game/finish" };
+}
+
+export function restart() {
+  return { type: "game/restart" };
 }

@@ -1,30 +1,37 @@
 import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 
 const StyledTimer = styled.div`
-  margin-top: 50px;
-  width: 58%;
-  margin-left: auto;
-  font-size: 20px;
+  font-size: 25px;
+  text-align: right;
+  width: 76%;
 `;
 
-function Timer({ timeLeft, setTimeLeft }) {
-  useEffect(() => {
-    // Create an interval that decreases the timeLeft by 1 every second
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime <= 1) {
-          clearInterval(timer);
-          return 0;
-        }
-        return prevTime - 1;
-      });
-    }, 1000); //
+function Timer() {
+  const secondRemaining = useSelector((state) => state.game.secondRemaining);
+  const dispatch = useDispatch();
+  const mins = Math.floor(secondRemaining / 60);
+  const seconds = secondRemaining % 60;
 
-    return () => clearInterval(timer);
-  }, [setTimeLeft]);
+  useEffect(
+    function () {
+      const id = setInterval(function () {
+        dispatch({ type: "tick" });
+      }, 1000);
 
-  return <StyledTimer>Time Remaining: {timeLeft}s</StyledTimer>;
+      return () => clearInterval(id);
+    },
+    [dispatch]
+  );
+
+  return (
+    <StyledTimer>
+      {mins < 10 && "0"}
+      {mins}:{seconds < 10 && "0"}
+      {seconds}
+    </StyledTimer>
+  );
 }
 
 export default Timer;

@@ -1,8 +1,9 @@
 import styled from "styled-components";
-import { useSearchParams } from "react-router-dom";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Heading from "../components/Heading";
 import { useSelector } from "react-redux";
+import Timer from "../components/Timer";
+import Result from "../components/Result";
 
 const StyledStartGame = styled.div`
   position: relative;
@@ -38,29 +39,27 @@ const Text = styled.h2`
 
 function StartGame() {
   const [textArea, setTextArea] = useState("");
+  const status = useSelector((state) => state.game.status);
   const sentencesTest = useSelector((state) => state.game.sentences);
-  console.log(sentencesTest);
-  console.log(sentencesTest[0]);
+  const filterValue = useSelector((state) => state.game.level) || "easy";
 
-  const [searchParams] = useSearchParams();
-  const filterValue = searchParams.get("level") || "easy";
-  let filterLevel;
+  const filterLevel = useMemo(() => {
+    if (filterValue === "easy")
+      return sentencesTest.filter((level) => level.level === "easy");
+    if (filterValue === "medium")
+      return sentencesTest.filter((level) => level.level === "medium");
+    if (filterValue === "hard")
+      return sentencesTest.filter((level) => level.level === "hard");
+  }, [filterValue, sentencesTest]);
 
-  if (filterValue === "easy")
-    filterLevel = sentencesTest.filter((level) => level.level === "easy");
-  if (filterValue === "medium")
-    filterLevel = sentencesTest.filter((level) => level.level === "medium");
-  if (filterValue === "hard")
-    filterLevel = sentencesTest.filter((level) => level.level === "hard");
+  const randomTest = useMemo(() => {
+    const randomIndex = Math.floor(Math.random() * filterLevel.length);
+    return filterLevel[randomIndex].test;
+  }, [filterLevel]);
 
-  let randomIndex = Math.floor(Math.random() * filterLevel.length);
-  let randomTest = filterLevel[randomIndex].test;
-
-  console.log(randomTest);
-
-  const test = "Fares Mohamed afsdf sdf sfds f sdfsd fsd fsd fs fsd fsd fsd";
-
-  return (
+  return status === "finished" || textArea === randomTest ? (
+    <Result textArea={textArea} randomTest={randomTest} />
+  ) : (
     <StyledStartGame>
       <Heading>Game Started</Heading>
       <Text>{randomTest}</Text>
@@ -69,9 +68,11 @@ function StartGame() {
           value={textArea}
           onChange={(e) => setTextArea(e.target.value)}
           placeholder={randomTest}
-          disabled={textArea === test}
+          disabled={textArea === randomTest}
         />
       </div>
+
+      <Timer />
     </StyledStartGame>
   );
 }

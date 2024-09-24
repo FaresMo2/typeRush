@@ -12,7 +12,7 @@ const Form = styled.form`
   color: white;
   display: flex;
   flex-direction: column;
-  gap: 50px;
+  gap: 150px;
   margin-top: 220px;
   z-index: 100;
 `;
@@ -42,6 +42,8 @@ const Button = styled.button`
   outline: none;
   font-weight: bold;
   transition: all 0.3s;
+  margin-top: -150px;
+
   &:hover {
     background-color: gray;
   }
@@ -64,10 +66,11 @@ function Home() {
 
   return (
     <Form onSubmit={handleSubmit}>
-      <Heading>Enter Your Name</Heading>
+      <Heading>Enter Your Name !</Heading>
 
       <Input
         type="text"
+        className="slide-top"
         placeholder="Enter your name..."
         value={name}
         onChange={(e) => setName(e.target.value)}

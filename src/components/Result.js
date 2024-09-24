@@ -1,16 +1,16 @@
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { restart } from "../features/startGame/gameSlice";
 
 const StyledResult = styled.div`
-  height: 100vh;
-  width: 100%;
-  color: white;
-  width: 50%;
-  height: 200px;
-  margin-inline: auto;
-
   position: relative;
+  color: white;
+  width: 80%;
   top: 20%;
+  z-index: 100;
+  text-align: center;
+
   /* Adding fade-in animation */
   opacity: 0;
   animation: fadeIn 3s ease forwards;
@@ -25,17 +25,19 @@ const StyledResult = styled.div`
   }
 `;
 
-const Button = styled.button`
+const Button = styled(Link)`
   border: 1px solid white;
   outline: none;
   display: inline-block;
-  padding: 15px 30px;
+  padding: 8px 35px;
   font-size: 25px;
   font-weight: bold;
   background-color: transparent;
   color: white;
   cursor: pointer;
   transition: 0.3s linear;
+  text-decoration: none;
+  text-align: center;
 
   &:hover {
     background-color: #fff;
@@ -48,19 +50,24 @@ const ResultMessage = styled.p`
   font-weight: bold;
 `;
 
-function Result({ textArea, test }) {
-  const navigate = useNavigate();
+const totalTime = 5;
+
+function Result({ textArea, randomTest }) {
+  const dispatch = useDispatch();
+  const time = useSelector((state) => state.game.secondRemaining);
 
   return (
     <StyledResult>
-      {textArea === test ? (
+      {textArea === randomTest ? (
         <ResultMessage>Congratulations, you did it.👑</ResultMessage>
       ) : (
         <ResultMessage>
           Unfortunately, you didn't do it but you can try again😔
         </ResultMessage>
       )}
-      <Button>Try Again</Button>
+      <Button to="/level" onClick={() => dispatch(restart())}>
+        Try Again
+      </Button>
     </StyledResult>
   );
 }
