@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { NavLink } from "react-router-dom"; // Import NavLink
 import styled from "styled-components";
 
 const Ul = styled.ul`
@@ -11,12 +12,18 @@ const Ul = styled.ul`
 const Li = styled.li`
   font-size: 20px;
   cursor: pointer;
+  text-transform: capitalize;
 `;
 
-const StyledLink = styled(Link)`
+const StyledNavLink = styled(NavLink)`
   text-decoration: none;
   font-weight: bold;
   color: white;
+
+  &.active {
+    color: #007bff; /* Color for active link */
+    font-weight: bold; /* Optional: Make active link bold */
+  }
 
   &:hover {
     color: #007bff; /* Change color on hover */
@@ -24,16 +31,23 @@ const StyledLink = styled(Link)`
 `;
 
 function Nav() {
+  const name = useSelector((state) => state.user.name);
   return (
     <Ul>
       <Li>
-        <StyledLink to="/">Home</StyledLink>
+        <StyledNavLink to="/level" activeClassName="active">
+          Level
+        </StyledNavLink>
       </Li>
       <Li>
-        <StyledLink to="/level">Level</StyledLink>
+        <StyledNavLink to="/about" activeClassName="active">
+          About
+        </StyledNavLink>
       </Li>
       <Li>
-        <StyledLink to="about">About</StyledLink>
+        <StyledNavLink to="/" activeClassName="active">
+          {name}
+        </StyledNavLink>
       </Li>
     </Ul>
   );
