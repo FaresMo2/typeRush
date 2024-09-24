@@ -21,3 +21,5 @@ Check out the live demo of the app: [TypeRush Live Demo](https://type-rush-kappa
 - react-router-dom
 - Styled Components
 
+
+## Feel free to update or add features to enhance the project!
